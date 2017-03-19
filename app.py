@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-import os
-import sys
 import json
 from flask import Flask, request
 import requests
@@ -11,17 +9,17 @@ from wit import Wit
 
 
 CLIENT_ACCESS_TOKEN = '2K7GXJSRTF7B5ZB74PNZBZQPGFYIIRKC'
-ACCESS_TOKEN = "EAAD0FIbuQqcBAGGBjgkx8bqZAHqD0Upa37c1yzxHW4r3j9b3uR3ExS0PI8ZB8mBVShJBm369cZA9Cmc3iJB6LchZAH4eLLuypj6Ge8Se9dQZBmke7UiAGPZAdZBT4eXJTctsVqSLiYwtdFavvS3GCu2mkbSJ6PvnDnrZANboZClKUhwZDZD"
-
-
-
+ACCESS_TOKEN = "EAAD0FIbuQqcBAMzcacTZCzwQP8n26frjCEp4p0PBVGIaTMI6cod0cqw6eutEcCwlnIWnZAYGsfmbqxAfwjDbsDIlUfGDYtUda6wyrkFJYkCX36YZADZB7KGZAy8uvFaXROGqr5FxcRTIxuF2E70j9Emj2mynCGUS3FNWQFAKXsAZDZD"
+ 
+	
+	
 
 
 
 
 app = Flask(__name__)
 
-
+ 
 #
 #def send(request, response):
 #    """
@@ -32,7 +30,7 @@ app = Flask(__name__)
 #    text = response['text']
 #    # send message
 #    reply(fb_id, text)
-#
+#	
 
 def reply(user_id, msg):
     data = {
@@ -61,22 +59,17 @@ def handle_incoming_messages():
 
 
 					context0 = {}
-					response = client.converse(sender, message, context0)
+					res = client.converse(sender, message, context0)
 
-
-					reply(sender, str(response['msg']))
+					#reply (sender, str(res))
+					reply (sender, res ['msg'])
+					#reply (sender, res ['quickreplies'])
 					return "ok"
 				else:
 					return "ok"
 	return "ok"
-#
-#
-#actions = {
-#    'send': send,
-#}
-
 
 client = Wit(access_token=CLIENT_ACCESS_TOKEN)
-
+ 
 if __name__ == '__main__':
     app.run(debug=True)
