@@ -1,3 +1,5 @@
+
+
 from flask import Flask, request
 import requests
 import json
@@ -9,8 +11,8 @@ from wit import Wit
 
 
 CLIENT_ACCESS_TOKEN = '2K7GXJSRTF7B5ZB74PNZBZQPGFYIIRKC'
-token = "EAAD0FIbuQqcBAIBnuVDLivMvwj5V2nZAC89qxBF66vxzRutSsNUSFQQcV2nuIGU2aQhIC0qBeHmSfHQ6LBz1hAJrQKh0MyKHkYd8nKUx4QDsf4ZCQfjwsaJ069t7LdLgt0ZCqJIDHWnxAfEi6im2L7cjxgdPd1afL0jZAPlPHgZDZD"
- 
+token = "EAAD0FIbuQqcBAMpc3F8B1W3qZBoUwjhzYn20WtFC9nVE8b7WZCbNypK3znS7mYBqijvvpvqds14UXHCqV1EwLLnC9q5ZAhmPt0h7SVpAQL65e2oRzKyurb9QYDSdXKmbV9cuP6IDiNxy63SMKPGZBNpQRy8ZB9MOjLbkJi8SmeQZDZD"
+
 
 app = Flask(__name__)
 
@@ -21,25 +23,30 @@ def reply(user_id, msg):
     }
     resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + token, json=data)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
   if request.method == 'POST':
     try:
-      data = json.loads(request.data)
-      text = data['entry'][0]['messaging'][0]['message']['text'] # Incoming Message Text
-      sender = data['entry'][0]['messaging'][0]['sender']['id'] # Sender ID
-	  
-      res = client.converse(sender, text, {})
-      reply (sender, res)
+        data = request.json
+        if data['object'] == "page":
+            for entry in data['entry']:
+                pageID = entry['id']
+                for msg in entry['messaging']:
+                    if msg['message']:
+                        sender = msg['sender']['id']
+                        if len(msg['message']) < 4:
+                            message = msg['message']['text']
 
+                            res = client.converse(sender, message, {})
+                            reply (sender, str(res))
     except Exception as e:
-      print traceback.format_exc() # something went wrong
+        print traceback.format_exc() # something went wrong
   elif request.method == 'GET': # For the initial verification
     return request.args.get('hub.challenge')
 
 
 client = Wit(access_token=CLIENT_ACCESS_TOKEN)
- 
+
 
 if __name__ == '__main__':
   app.run(debug=True)
