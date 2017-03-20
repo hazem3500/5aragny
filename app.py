@@ -23,7 +23,7 @@ def reply(user_id, msg):
     }
     resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + token, json=data)
 
-@app.route('/webhook', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def webhook():
   if request.method == 'POST':
     try:
@@ -38,11 +38,17 @@ def webhook():
                             message = msg['message']['text']
 
                             res = client.converse(sender, message, {})
-                            reply (sender, str(res))
+                            if res['msg']:
+                                reply (sender, res['msg'])
+                                return "ok"
+                            return "ok"
+                        return "ok"
+                    return "ok"
     except Exception as e:
         print traceback.format_exc() # something went wrong
   elif request.method == 'GET': # For the initial verification
     return request.args.get('hub.challenge')
+    return "ok"
 
 
 client = Wit(access_token=CLIENT_ACCESS_TOKEN)
